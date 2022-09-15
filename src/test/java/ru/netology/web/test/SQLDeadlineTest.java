@@ -36,14 +36,14 @@ public class SQLDeadlineTest {
     @Test
     void shouldUnsuccessfulAuthenticationWithInvalidPassword() {
         var loginPage = new LoginPage();
-        var authInfo = DataHelper.getAuthInfo();
-        var verificationPage = loginPage.inValidPassword(authInfo);
+        var authInfo = DataHelper.getInvalidAuthInfo();
+        loginPage.inValidPassword(authInfo);
     }
 
     @Test
     void shouldBlockSystemWith3TimeUnsuccessfulAuthentication() {
         var loginPage = new LoginPage();
-        var authInfo = DataHelper.getAuthInfo();
-        var verificationPage = loginPage.blockSystem(authInfo);
+        var authInfo = DataHelper.getInvalidAuthInfo();
+        loginPage.blockSystem(authInfo);
     }
 }

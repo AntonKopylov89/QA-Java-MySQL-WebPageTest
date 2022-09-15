@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static org.openqa.selenium.Keys.BACK_SPACE;
 
 public class LoginPage {
-    private static Faker faker;
+
     private SelenideElement loginField = $("[data-test-id=login] input");
     private SelenideElement passwordField = $("[data-test-id=password] input");
     private SelenideElement loginButton = $("[data-test-id=action-login]");
@@ -24,13 +24,11 @@ public class LoginPage {
         return new VerificationPage();
     }
 
-    public LoginPage inValidPassword(DataHelper.AuthInfo info) {
-        faker = new Faker(new Locale("ru"));
-        loginField.setValue(info.getTestUserLogin());
-        passwordField.setValue(faker.internet().password());
+    public void inValidPassword(DataHelper.InvalidAuthInfo info) {
+        loginField.setValue(info.getUserLogin());
+        passwordField.setValue(info.getUserPassword());
         loginButton.click();
         $("[data-test-id=error-notification]").shouldHave(Condition.text("Ошибка! " + "Неверно указан логин или пароль"));
-        return new LoginPage();
     }
 
     public void cleanLoginField() {
@@ -43,26 +41,17 @@ public class LoginPage {
         passwordField.sendKeys(BACK_SPACE);
     }
 
-    public LoginPage blockSystem(DataHelper.AuthInfo info) {
-        faker = new Faker(new Locale("ru"));
-        loginField.setValue(info.getTestUserLogin());
-        passwordField.setValue(faker.internet().password());
-        loginButton.click();
-        $("[data-test-id=error-notification]").shouldHave(Condition.text("Ошибка! " + "Неверно указан логин или пароль"));
+    public void enterInvalidPasswordAndCleanFields(DataHelper.InvalidAuthInfo info) {
+        inValidPassword(info);
         cleanLoginField();
         cleanPasswordField();
-        loginField.setValue(info.getTestUserLogin());
-        passwordField.setValue(faker.internet().password());
-        loginButton.click();
-        $("[data-test-id=error-notification]").shouldHave(Condition.text("Ошибка! " + "Неверно указан логин или пароль"));
-        cleanLoginField();
-        cleanPasswordField();
-        loginField.setValue(info.getTestUserLogin());
-        passwordField.setValue(faker.internet().password());
-        loginButton.click();
-        $("[data-test-id=error-notification]").shouldHave(Condition.text("Система заблокирована"));
-        return new LoginPage();
     }
 
+    public void blockSystem(DataHelper.InvalidAuthInfo info) {
+        enterInvalidPasswordAndCleanFields(info);
+        enterInvalidPasswordAndCleanFields(info);
+        inValidPassword(info);
+        $("[data-test-id=error-notification]").shouldHave(Condition.text("Система заблокирована"));
+    }
 
 }

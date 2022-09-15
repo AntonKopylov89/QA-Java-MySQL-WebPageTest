@@ -1,5 +1,6 @@
 package ru.netology.web.data;
 
+import com.github.javafaker.Faker;
 import lombok.SneakyThrows;
 import lombok.Value;
 import org.apache.commons.dbutils.QueryRunner;
@@ -9,6 +10,7 @@ import java.sql.DriverManager;
 
 public class DataHelper {
 
+
     @Value
     public static class AuthInfo {
         private String id;
@@ -16,8 +18,23 @@ public class DataHelper {
         private String testUserPassword;
     }
 
+    @Value
+    public static class InvalidAuthInfo {
+        private String UserId;
+        private String UserLogin;
+        private String UserPassword;
+    }
+
+    private static String getGeneratePassword() {
+        return new Faker().internet().password();
+    }
+
     public static AuthInfo getAuthInfo() {
         return new AuthInfo(getDataBaseId("vasya"), "vasya", "qwerty123");
+    }
+
+    public static InvalidAuthInfo getInvalidAuthInfo() {
+        return new InvalidAuthInfo(getDataBaseId("vasya"), "vasya", getGeneratePassword());
     }
 
     private DataHelper() {
